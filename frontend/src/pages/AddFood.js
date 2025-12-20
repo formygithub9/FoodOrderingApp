@@ -23,9 +23,21 @@ const AddFood = () => {
         })
       },[])
 
-    const handleChange  = () => {
-        
+    const handleChange  = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev)=>({
+            ...prev,
+            [name]:value
+        }));
     }
+
+    const handleFileChange = (e) => {
+        setFormData((prev) => ({
+            ...prev,
+            image:e.target.files[0]
+        }));
+    }
+
     const handleSubmit = async(e)=>{
         e.preventDefault();
         try{
@@ -79,7 +91,7 @@ const AddFood = () => {
 
                         <div className='mb-3'>
                             <label className='form-label'> Description</label>
-                            <input name="item_description" type="text" className='form-control' value={formData.item_description} placeholder='Enter Description' onChange={handleChange} required/>
+                            <textarea name="item_description" className='form-control' value={formData.item_description} placeholder='Enter Description' onChange={handleChange} required/>
                         </div>
 
                         <div className='mb-3'>
@@ -94,7 +106,7 @@ const AddFood = () => {
 
                         <div className='mb-3'>
                             <label className='form-label'> Image </label>
-                            <input name="image" type="file" accept="image/*" className='form-control' placeholder='' onChange={handleChange} required/>
+                            <input name="image" type="file" accept="image/*" className='form-control' placeholder='' onChange={handleFileChange} required/>
                         </div>
         
         
