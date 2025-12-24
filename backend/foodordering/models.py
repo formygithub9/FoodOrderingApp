@@ -6,7 +6,7 @@ class User(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.EmailField(max_length=50, unique=True)
-    mobile = models.CharField(max_length=15),
+    mobile = models.CharField(max_length=15)
     password = models.CharField(max_length=50)
     reg_date = models.DateTimeField(auto_now_add=True)
 
@@ -24,7 +24,7 @@ class Food(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     item_name = models.CharField(max_length=50)
     item_price = models.DecimalField(max_digits=10,decimal_places=2)
-    item_description = models.TextField(max_length=500,null=True,blank=True),
+    item_description = models.TextField(max_length=500,null=True,blank=True)
     image = models.ImageField(upload_to='food_images/')
     item_quantity =models.CharField(max_length=50)
     is_available = models.BooleanField(default=True)

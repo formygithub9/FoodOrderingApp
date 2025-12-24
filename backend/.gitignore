@@ -13,3 +13,12 @@ db.sqlite3
 # OS files
 .DS_Store
 Thumbs.db
+
+# Django media files (uploads)
+backend/media/
+
+# Node / React
+node_modules/
+
+# Build files
+frontend/build/

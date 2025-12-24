@@ -4,6 +4,7 @@ import '../styles/admin.css'
 import {toast , ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
+import PublicLayout from '../components/PublicLayout';
 
 function AdminLogin() {
   const navigate = useNavigate()
@@ -34,26 +35,27 @@ function AdminLogin() {
     }
   }
   return (
+    <PublicLayout>
+        <div className='d-flex justify-content-center align-items-center vh-100' style={{backgroundImage:"url('/images/food3.jpg')",backgroundSize:"cover"}}>
+            <div className='card p-4 shadow-lg' style={{maxWidth:'400px',width:'100%'}}>
+                <h4 className='text-center mb-4'><FaUser className='me-2 icon-fix' />Admin Login</h4>
+                <form onSubmit={handleLogin}>
+                    <div className='mb-3'>
+                        <label className='form-label'><FaUser className='me-1 icon-fix' /> Username</label>
+                        <input type="text" className='form-control' value={username} onChange={(e)=>setUsername(e.target.value)} placeholder='Enter username' required/>
+                    </div>
 
-    <div className='d-flex justify-content-center align-items-center vh-100' style={{backgroundImage:"url('/images/food3.jpg')",backgroundSize:"cover"}}>
-        <div className='card p-4 shadow-lg' style={{maxWidth:'400px',width:'100%'}}>
-            <h4 className='text-center mb-4'><FaUser className='me-2 icon-fix' />Admin Login</h4>
-            <form onSubmit={handleLogin}>
-                <div className='mb-3'>
-                    <label className='form-label'><FaUser className='me-1 icon-fix' /> Username</label>
-                    <input type="text" className='form-control' value={username} onChange={(e)=>setUsername(e.target.value)} placeholder='Enter username' required/>
-                </div>
+                    <div className='mb-3'>
+                        <label className='form-label'><FaLock className='me-1 icon-fix' /> Password</label>
+                        <input type="password" className='form-control' value={password} onChange={(e)=>setPassword(e.target.value)} placeholder='Enter password' required/>
+                    </div>
 
-                <div className='mb-3'>
-                    <label className='form-label'><FaLock className='me-1 icon-fix' /> Password</label>
-                    <input type="password" className='form-control' value={password} onChange={(e)=>setPassword(e.target.value)} placeholder='Enter password' required/>
-                </div>
-
-                <button type="submit" className="btn btn-primary w-100 mt-3"><FaSignInAlt className='me-1'/> Login</button>
-            </form>
+                    <button type="submit" className="btn btn-primary w-100 mt-3"><FaSignInAlt className='me-1'/> Login</button>
+                </form>
+            </div>
+            <ToastContainer position="top-right" autoClose={2000} />
         </div>
-        <ToastContainer position="top-right" autoClose={2000} />
-    </div>
+    </PublicLayout>
   )
 }
 

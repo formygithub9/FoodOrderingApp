@@ -1,9 +1,12 @@
 from django.shortcuts import render
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, parser_classes
 from django.contrib.auth import authenticate
 from rest_framework.response import Response
 from .models import *
 from .serializers import *
+
+from rest_framework.parsers import MultiPartParser,FormParser
+
 # Create your views here.
 
 @api_view(['POST'])
@@ -24,7 +27,52 @@ def add_category(request):
     return Response({"message":"Category has been created.",},status=201)
 
 @api_view(['GET'])
-def list_category(request):
+def list_categories(request):
     categories = Category.objects.all()
     serializer = CategorySerializer(categories,many=True)
     return Response(serializer.data)
+
+@api_view(['POST'])
+@parser_classes([MultiPartParser,FormParser])
+def add_food_item(request):
+    serializer = FoodSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({"message":"Food item has been added.",},status=201)
+    return Response({"message":"Something went wrong.",},status=400)
+
+@api_view(['GET'])
+def list_foods(request):
+    foods = Food.objects.all()
+    serializer = FoodSerializer(foods,many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def food_search(request):
+    query = request.GET.get('q','')
+    foods = Food.objects.filter(item_name__icontains=query)
+    serializer = FoodSerializer(foods,many=True)
+    return Response(serializer.data)
+
+import random
+@api_view(['GET'])
+def random_foods(request):
+    foods = list(Food.objects.all())
+    random.shuffle(foods)
+    limited_foods = foods[0:9]
+    serializer = FoodSerializer(limited_foods,many=True)
+    return Response(serializer.data)
+
+from django.contrib.auth.hashers import make_password
+@api_view(['POST'])
+def register_user(request):
+    first_name=request.data.get('firstname')
+    last_name=request.data.get('lastname')
+    mobile=request.data.get('mobilenumber')
+    email=request.data.get('email')
+    password=request.data.get('password')
+    
+    if User.objects.filter(email=email).exists() or User.objects.filter(mobile=password).exists():
+        return Response({"message":"Email or Mobile Number already registered.",},status=400)
+    User.objects.create(first_name=first_name, last_name=last_name, mobile=mobile, email=email, password=make_password(password))
+    return Response({"message":"User registered successfully.",},status=201)

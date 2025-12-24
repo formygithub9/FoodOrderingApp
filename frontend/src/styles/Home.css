@@ -1,0 +1,19 @@
+.hero{
+    min-height: 500px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+input::placeholder{
+    font-style: italic;
+}
+
+@media (max-width:768px){
+    .hero{
+        min-height: 300px;
+    }
+}
