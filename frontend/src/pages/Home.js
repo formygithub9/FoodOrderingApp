@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 function Home() {
   const [foods, setFoods] = useState([]);
   useEffect(()=>{
-      fetch(`http://127.0.0.1:8000/api/random_foods`)
+      fetch(`http://127.0.0.1:8000/api/random_foods/`)
           .then(res => res.json())
           .then(data => {
               setFoods(data)
@@ -41,13 +41,13 @@ function Home() {
                             <img src={`http://127.0.0.1:8000${food.image}`} className='card-img-top' style={{ height: '200px', objectFit: 'cover' }} alt="food_img" />
                             <div className='card-body'>
                                 <h5 className='card-title'>
-                                    <Link to="#">{food.item_name}</Link>
+                                    <Link to={`/food/${food.id}`}>{food.item_name}</Link>
                                 </h5>
                                 <p className='card-text text-muted'>{food.item_description?.slice(0,40)} {food.item_description?.length>40 && '...'}</p>
                                 <div className='d-flex justify-content-between align-items-center'>
                                     <span className='fw-bold'>₹ {food.item_price}</span>
                                     {food.is_available ? (
-                                        <Link to="" className='btn btn-outline-primary btn-sm'><i className='fas fa-shopping-basket me-1'></i> Order Now</Link>
+                                        <Link to={`/food/${food.id}`} className='btn btn-outline-primary btn-sm'><i className='fas fa-shopping-basket me-1'></i> Order Now</Link>
                                     ) : (
                                         <div title='This food item is not availabl right now. Please try again later.'><button className='btn btn-outline-secondary btn-sm'><i className='fas fa-times-circle me-1'></i>Currently Unavailable</button></div>
                                     ) }
@@ -59,6 +59,32 @@ function Home() {
                 ) }
             </div>
           </div>
+      </section>
+      <section className="py-5 bg-dark text-white">
+        <div className="container text-center">
+          <h2>Ordering in 3 Simple Steps</h2>
+          <div className="row mt-4">
+            <div className="col-md-4">
+              <h4>1. Pick a dish you love</h4>
+              <p>Explore hundreds of mouth-watering options and choose what you crave!</p>
+            </div>
+            <div className="col-md-4">
+              <h4>2. Pick a dish you love</h4>
+              <p>Tell us where you are, we'll handle the rest.</p>
+            </div>
+            <div className="col-md-4">
+              <h4>3. Enjoy doorstep delivery</h4>
+              <p>Relax while your meal arrives fast and fresh -pay when it's delivered!</p>
+            </div>
+          </div>
+          <p>Pay easily with Cash on Delivery - hassle-free!</p>
+        </div>
+      </section>
+      <section className="py-5 bg-warning text-center text-dark">
+        <h4>Ready to Satisfy Your Hunger?</h4>
+        <Link to="" className='btn btn-dark btn-lg'>
+          Browse Full Menu
+        </Link>
       </section>
     </PublicLayeout>
   )

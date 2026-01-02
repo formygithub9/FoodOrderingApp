@@ -9,6 +9,12 @@ urlpatterns = [
     path('food_search/',food_search),
     path('random_foods/',random_foods),
     path('register/',register_user),
+    path('login/',login_user),
+    path('foods/<int:id>',food_detail),
+    path('cart/add/',add_to_cart),
+    path('cart/<int:user_id>/',get_cart_items),
+    path('cart/update_quantity/',update_cart_quantity),
+    path('cart/delete/<int:order_id>/',delete_cart_item),
 ]
 
 

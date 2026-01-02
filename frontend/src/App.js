@@ -8,6 +8,9 @@ import AddFood from './pages/AddFood';
 import ManageFood from './pages/ManageFood';
 import SearchPage from './pages/SearchPage';
 import Register from './pages/Register';
+import Login from './pages/Login';
+import FoodDetail from './pages/FoodDetail';
+import Cart from './pages/Cart';
 
 function App() {
   return (
@@ -22,6 +25,9 @@ function App() {
         <Route path="/manage-food" element={<ManageFood/>}></Route>
         <Route path="/search" element={<SearchPage/>}></Route>
         <Route path="/register" element={<Register/>}></Route>
+        <Route path="/login" element={<Login/>}></Route>
+        <Route path="/food/:id" element={<FoodDetail/>}></Route>
+        <Route path="/cart" element={<Cart/>}></Route>
       </Routes>
     </BrowserRouter>
   );

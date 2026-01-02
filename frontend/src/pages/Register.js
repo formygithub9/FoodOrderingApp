@@ -45,7 +45,11 @@ const Register = () => {
                     lastname : '',
                     mobilenumber : '',
                     email : '',
-                    password : ''
+                    password : '',
+                    repeatpassword: ''
+                });
+                setTimeout(()=>{
+                    navigate('/login')
                 });
             }
             else{

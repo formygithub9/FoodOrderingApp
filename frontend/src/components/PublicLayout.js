@@ -1,9 +1,29 @@
-import React from 'react';
-import { FaHome, FaSignInAlt, FaTruck, FaUserPlus, FaUserShield, FaUtensils } from 'react-icons/fa'
-import { Link } from 'react-router-dom'
+import React, {useEffect, useState} from 'react';
+import { FaCogs, FaHeart, FaHome, FaShoppingCart, FaSignInAlt, FaSignOutAlt, FaTruck, FaUser, FaUserCircle, FaUserPlus, FaUserShield, FaUtensils } from 'react-icons/fa'
+import { Link, useNavigate } from 'react-router-dom'
 import '../styles/layout.css'
 
-const PublickLayeout = ({children}) => {
+const PublicLayout = ({children}) => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState('');
+
+  const navigate = useNavigate();
+  const userId =localStorage.getItem("userId");
+  const name =localStorage.getItem("userName");
+
+  useEffect(()=>{
+    if (userId) {
+      setIsLoggedIn(true);
+      setUserName(name);
+    }
+  },[userId]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userName");
+    setIsLoggedIn(false);
+    navigate('/login');
+  }
   return (
     <div>
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -23,15 +43,43 @@ const PublickLayeout = ({children}) => {
               <li className="nav-item">
                 <Link to='' className="nav-link mx-1" ><FaTruck className='me-1'/> Track</Link>
               </li>
-              <li className="nav-item">
-                <Link to='/register' className="nav-link mx-1" ><FaUserPlus className='me-1'/> Register</Link>
-              </li>
-              <li className="nav-item">
-                <Link to='' className="nav-link mx-1" ><FaSignInAlt className='me-1'/> Login</Link>
-              </li>
-              <li className="nav-item">
-                <Link to='/admin-login' className="nav-link mx-1" ><FaUserShield className='me-1'/> Admin</Link>
-              </li>
+              {!isLoggedIn ? (
+                <>
+                  <li className="nav-item">
+                    <Link to='/register' className="nav-link mx-1" ><FaUserPlus className='me-1'/> Register</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to='/login' className="nav-link mx-1" ><FaSignInAlt className='me-1'/> Login</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to='/admin-login' className="nav-link mx-1" ><FaUserShield className='me-1'/> Admin</Link>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li className="nav-item">
+                    <Link to='' className="nav-link mx-1" ><FaUser className='me-1'/> My Orders</Link>
+                  </li> 
+                  <li className="nav-item">
+                    <Link to='/cart' className="nav-link mx-1" ><FaShoppingCart className='me-1'/> Cart</Link>
+                  </li> 
+                  <li className="nav-item">
+                    <Link to='/register' className="nav-link mx-1" ><FaHeart className='me-1'/> Wishlist</Link>
+                  </li>
+                  <li className="nav-item dropdown">
+                    <a className="nav-link dropdown-toggle text-capitalize" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                      <FaUserCircle className='me-1'/>{userName}
+                    </a>
+                    <ul className="dropdown-menu">
+                      <li><Link className="dropdown-item" to="#"><FaUser className='me-1'/>Profile</Link></li>
+                      <li><Link className="dropdown-item" to="#"><FaCogs className='me-1'/>Settings</Link></li>
+                      <li><hr className="dropdown-divider" /></li>
+                      <li><button className="dropdown-item" onClick={handleLogout}><FaSignOutAlt className='me-1'/>Logout</button></li>
+                    </ul>
+                  </li>
+                </>
+              ) }
+              
             </ul>
           </div>
         </div>
@@ -48,4 +96,4 @@ const PublickLayeout = ({children}) => {
   );
 }
 
-export default PublickLayeout;
+export default PublicLayout;
