@@ -12,6 +12,9 @@ import Login from './pages/Login';
 import FoodDetail from './pages/FoodDetail';
 import Cart from './pages/Cart';
 import PaymentPage from './pages/PaymentPage';
+import MyOrders from './pages/MyOrders';
+import OrderDetails from './pages/OrderDetails';
+import ProfilePage from './pages/ProfilePage';
 
 function App() {
   return (
@@ -30,6 +33,9 @@ function App() {
         <Route path="/food/:id" element={<FoodDetail/>}></Route>
         <Route path="/cart" element={<Cart/>}></Route>
         <Route path="/payment" element={<PaymentPage/>}></Route>
+        <Route path="/my-orders" element={<MyOrders/>}></Route>
+        <Route path="/order-details/:order_number" element={<OrderDetails/>}></Route>
+        <Route path="/profile" element={<ProfilePage/>}></Route>
       </Routes>
     </BrowserRouter>
   );
