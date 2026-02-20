@@ -126,7 +126,7 @@ def add_to_cart(request):
 @api_view(['GET'])    
 def get_cart_items(request,user_id):
     orders = Order.objects.filter(user_id=user_id,is_order_placed=False).select_related('food')
-    serializer = CartOrderSerializer(orders,many=True)
+    serializer = OrderSerializer(orders,many=True)
     return Response(serializer.data)
 
 @api_view(['PUT'])
@@ -186,3 +186,61 @@ def place_order(request):
         return Response({"message":f"Order placed successfully! Order No: {order_number} "},status=201)
     except:
         return Response({"message":"Something went wrong"},status=404)
+    
+@api_view(['GET'])
+def user_orders(request,user_id):
+    orders = OrderAddress.objects.filter(user_id=user_id).order_by('-id')
+    serializer = MyOrdersListSerializer(orders,many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def order_by_order_number(request,order_number):
+    orders = Order.objects.filter(order_number=order_number,is_order_placed=True).select_related('food')
+    serializer = OrderSerializer(orders,many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def get_order_address(request,order_number):
+    address = OrderAddress.objects.get(order_number=order_number)
+    serializer = OrderAddressSerializer(address)
+    return Response(serializer.data)
+
+from django.shortcuts import render
+def get_invoice(request,order_number):
+    orders = Order.objects.filter(order_number=order_number,is_order_placed=True).select_related('food')
+    address = OrderAddress.objects.get(order_number=order_number)
+
+    grand_total = 0
+    order_data = []
+
+    for order in orders:
+        total_price = order.food.item_price * order.quantity
+        grand_total+= total_price
+        order_data.append({
+            'food':order.food,
+            'quantity' : order.quantity,
+            'total_price' : total_price
+        })
+    
+    return render(request,'invoice.html',{
+        'order_number' : order_number,
+        'address' : address,
+        'grand_total' : grand_total,
+        'orders' : order_data
+    })
+
+@api_view(['GET'])
+def get_user_profile(request,user_id):
+    user = User.objects.get(id=user_id)
+    serializer = UserSerializer(user)
+    return Response(serializer.data)
+
+@api_view(['PUT'])
+def update_user_profile(request,user_id):
+    user = User.objects.get(id=user_id)
+    serializer = UserSerializer(user,data=request.data,partial=True)
+    if serializer.is_valid():
+        serializer.save
+        return Response({"message":"Profile updated successfully."},status=200)
+    return Response(serializer.error,status=400)
+

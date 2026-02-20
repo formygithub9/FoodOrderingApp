@@ -42,7 +42,7 @@ const PaymentPage = () => {
             if (response.status === 201) {
                 toast.success(result.message);
                 setTimeout(() => {
-                    navigate('/my-oredrs');
+                    navigate('/my-orders');
                 }, 2000);
             }
             else {
