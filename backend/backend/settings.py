@@ -12,18 +12,20 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 
+import environ
+import os
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-uo(u9=kodz)vgthh5_*%y*3-yp)rlcy+xg2j)yt$7=h$@uldva'
+# SECRET_KEY = 'django-insecure-uo(u9=kodz)vgthh5_*%y*3-yp)rlcy+xg2j)yt$7=h$@uldva'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+
 
 ALLOWED_HOSTS = []
 
@@ -75,25 +77,25 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'foodorderingbackend',
-        'USER': 'postgres',   # ya postgres
-        'PASSWORD': 'starstar',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    },
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'foodorderingbackend',
+#         'USER': 'postgres',   # ya postgres
+#         'PASSWORD': 'starstar',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     },
 
-    'foodorderingapp': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'foodorderingapp',
-        'USER': 'postgres',   # ya postgres
-        'PASSWORD': 'starstar',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}
+#     'foodorderingapp': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'foodorderingapp',
+#         'USER': 'postgres',   # ya postgres
+#         'PASSWORD': 'starstar',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
 
 
 # Password validation
@@ -143,3 +145,30 @@ MEDIA_ROOT = BASE_DIR/'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 DATABASE_ROUTERS = ['backend.db_routers.FoodOrderingRouter']
+
+
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+SECRET_KEY = env('SECRET_KEY')
+
+DEBUG = env.bool('DEBUG', default=False)
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env('DB1_NAME'),
+        'USER': env('DB1_USER'),
+        'PASSWORD': env('DB1_PASSWORD'),
+        'HOST': env('DB1_HOST'),
+        'PORT': env('DB1_PORT'),
+    },
+
+    'foodorderingapp': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env('DB2_NAME'),
+        'USER': env('DB2_USER'),
+        'PASSWORD': env('DB2_PASSWORD'),
+        'HOST': env('DB2_HOST'),
+        'PORT': env('DB2_PORT'),
+    }
+}
