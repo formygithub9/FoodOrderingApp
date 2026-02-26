@@ -74,31 +74,31 @@ const AdminSidebar = () => {
             {openMenus.orders && (
                 <div className='ps-4'>
             
-                    <Link className='list-group-item list-group-item-action bg-dark text-white border-0'>
+                    <Link to="/orders-not-confirmed" className='list-group-item list-group-item-action bg-dark text-white border-0'>
                         Not Confirmed
                     </Link>
                 
-                    <Link className='list-group-item list-group-item-action bg-dark text-white border-0'>
+                    <Link to="/orders-confirmed" className='list-group-item list-group-item-action bg-dark text-white border-0'>
                         Confirmed
                     </Link>
 
-                    <Link className='list-group-item list-group-item-action bg-dark text-white border-0'>
+                    <Link to="/food-being-prepared" className='list-group-item list-group-item-action bg-dark text-white border-0'>
                         Being Prepared
                     </Link>
 
-                    <Link className='list-group-item list-group-item-action bg-dark text-white border-0'>
+                    <Link to="/food-pickup" className='list-group-item list-group-item-action bg-dark text-white border-0'>
                         Food Pickup
                     </Link>
 
-                    <Link className='list-group-item list-group-item-action bg-dark text-white border-0'>
+                    <Link to="/food-delivered" className='list-group-item list-group-item-action bg-dark text-white border-0'>
                         Delivered
                     </Link>
 
-                    <Link className='list-group-item list-group-item-action bg-dark text-white border-0'>
+                    <Link to="/order-cancelled" className='list-group-item list-group-item-action bg-dark text-white border-0'>
                         Cancelled
                     </Link>
                     
-                    <Link className='list-group-item list-group-item-action bg-dark text-white border-0'>
+                    <Link to="/all-orders" className='list-group-item list-group-item-action bg-dark text-white border-0'>
                         All Orders
                     </Link>
                 </div>
@@ -106,7 +106,7 @@ const AdminSidebar = () => {
             )}
       
       <div className='list-group list-group-flush'>
-        <Link className='list-group-item list-group-item-action bg-dark text-white'>
+        <Link to="/order-report" className='list-group-item list-group-item-action bg-dark text-white'>
             <FaFile/> B/W Dates Report
         </Link>
       </div>

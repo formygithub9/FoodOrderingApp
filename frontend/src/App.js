@@ -15,6 +15,15 @@ import PaymentPage from './pages/PaymentPage';
 import MyOrders from './pages/MyOrders';
 import OrderDetails from './pages/OrderDetails';
 import ProfilePage from './pages/ProfilePage';
+import ChangePassword from './pages/ChangePassword';
+import OrdersNotConfirmed from './pages/OrdersNotConfirmed';
+import OrdersConfirmed from './pages/OrdersConfirmed';
+import FoodbeingPrepared from './pages/FoodbeingPrepared';
+import AllOrders from './pages/AllOrders';
+import FoodDelivered from './pages/FoodDelivered';
+import OrderCancelled from './pages/OrderCancelled';
+import FoodPickup from './pages/FoodPickup';
+import OrderReport from './pages/OrderReport';
 
 function App() {
   return (
@@ -27,6 +36,14 @@ function App() {
         <Route path="/manage-category" element={<ManageCategory/>}></Route>
         <Route path="/add-food" element={<AddFood/>}></Route>
         <Route path="/manage-food" element={<ManageFood/>}></Route>
+        <Route path="/orders-not-confirmed" element={<OrdersNotConfirmed/>}></Route>
+        <Route path="/orders-confirmed" element={<OrdersConfirmed/>}></Route>
+        <Route path="/food-being-prepared" element={<FoodbeingPrepared/>}></Route>
+        <Route path="/food-delivered" element={<FoodDelivered/>}></Route>
+        <Route path="/food-pickup" element={<FoodPickup/>}></Route>
+        <Route path="/all-orders" element={<AllOrders/>}></Route>
+        <Route path="/order-report" element={<OrderReport/>}></Route>
+
         <Route path="/search" element={<SearchPage/>}></Route>
         <Route path="/register" element={<Register/>}></Route>
         <Route path="/login" element={<Login/>}></Route>
@@ -36,6 +53,7 @@ function App() {
         <Route path="/my-orders" element={<MyOrders/>}></Route>
         <Route path="/order-details/:order_number" element={<OrderDetails/>}></Route>
         <Route path="/profile" element={<ProfilePage/>}></Route>
+        <Route path="/changepassword" element={<ChangePassword/>}></Route>
       </Routes>
     </BrowserRouter>
   );
