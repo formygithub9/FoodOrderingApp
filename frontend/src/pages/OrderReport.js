@@ -89,30 +89,37 @@ const OrderReport = () => {
                     </div>
                 </div>
             </form>
-            <table className='table table-bordered table-hover table-stripped'>
-                <thead>
-                    <tr>
-                        <th>SNo</th>
-                        <th>Order Number</th>
-                        <th>Order Date</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {orders.map((order, index) => (
-                        <tr key={order.id}>
-                            <td>{index + 1}</td>
-                            <td>{order.order_number}</td>
-                            <td>{new Date(order.order_time).toLocaleString()}</td>
-                            <td>
-                                <Link to={`/admin-view-order-detail/${order.order_number}`} className="btn btn-sm btn-outline-primary me-2"> View Details</Link>
-
-                            </td>
+            
+            <div class="text-center">
+                <button className='btn btn-primary mb-3' type="submit" onClick={handleSubmit}>Submit</button>
+            </div>
+            
+            {orders.length > 0 && (
+                <table className='table table-bordered table-hover table-stripped'>
+                    <thead className='table-dark'>
+                        <tr>
+                            <th>SNo</th>
+                            <th>Order Number</th>
+                            <th>Order Date</th>
+                            <th>Action</th>
                         </tr>
-                    ))}
+                    </thead>
+                    <tbody>
+                        {orders.map((order, index) => (
+                            <tr key={order.id}>
+                                <td>{index + 1}</td>
+                                <td>{order.order_number}</td>
+                                <td>{new Date(order.order_time).toLocaleString()}</td>
+                                <td>
+                                    <Link to={`/admin-view-order-detail/${order.order_number}`} className="btn btn-sm btn-outline-primary me-2"> View Details</Link>
 
-                </tbody>
-            </table>
+                                </td>
+                            </tr>
+                        ))}
+
+                    </tbody>
+                </table>
+            )}
         </div>
     </AdminLayout>
   )
