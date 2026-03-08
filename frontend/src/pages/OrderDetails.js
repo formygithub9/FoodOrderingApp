@@ -19,7 +19,7 @@ const OrderDetails = () => {
             .then(res => res.json())
             .then(data =>{
                 setOrderItems(data);
-        const totalAmount = data.reduce((sum, item) => sum + item.food.item_price,0)    
+        const totalAmount = data.reduce((sum, item) => sum + (item.food.item_price * item.quantity),0)    
         setTotal(totalAmount);
             })
 

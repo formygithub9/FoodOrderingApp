@@ -311,3 +311,70 @@ def order_between_dates(request):
         orders = orders.filter(order_final_status=status)
     serializer = OrderSummarySerializer(orders.order_by('-order_time'),many=True)
     return Response(serializer.data)
+
+@api_view(['GET'])
+def view_order_detail(request,order_number):
+    
+    try:
+        order_address = OrderAddress.objects.select_related('user').get(order_number=order_number)
+        ordered_foods = Order.objects.filter(order_number=order_number).select_related('user')
+        tracking = FoodTracking.objects.filter(order__order_number=order_number)
+    except:
+        return Response({'error':'Something went wrong'},status=404)
+    
+    return Response({
+        'order' : OrderDetailSerializer(order_address).data,
+        'foods' : OrderedFoodSerializer(ordered_foods,many=True).data,
+        'tracking' : FoodTrackingSerializer(tracking,many=True).data    
+    },status=200)
+
+@api_view(['POST'])
+def update_order_status(request):
+    order_number = request.data.get('order_number')
+    new_status = request.data.get('status')
+    remark = request.data.get('remark')
+
+    try:
+        address = OrderAddress.objects.get(order_number=order_number)
+        order = Order.objects.filter(order_number=order_number).first()
+        if not order:
+            return Response({'error':'Order not found'},status=404)
+        FoodTracking.objects.create(order=order,remark=remark,status=new_status,order_cancelled_by_user=False)
+        address.order_final_status = new_status
+        address.save()
+        return Response({'message':'Order status updated successfully.'},status=200)
+    except OrderAddress.DoesNotExist:
+        return Response({'error':'Invalid Order Number'},status=400)
+    
+@api_view(['GET'])
+def search_orders(request):
+    query = request.GET.get('q','')
+    if query:
+        orders = OrderAddress.objects.filter(order_number__icontains=query).order_by('-order_time')
+    else:
+        orders = []
+    serializer = OrderSummarySerializer(orders, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET','PUT','DELETE'])
+def category_detail(request,id):
+    try:
+        category = Category.objects.get(id=id)
+    except Category.DoesNotExist:
+        return Response({'error':'Category not found.'},status=404)
+    
+    if request.method == 'GET':
+        serializer = CategorySerializer(category)
+        return Response(serializer.data)
+
+    elif request.method == 'PUT':
+        serializer = CategorySerializer(category,data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+        return Response({'message':'Category updated successfully.'},status=200)
+    
+    elif request.method == 'DELETE':
+        category.delete()
+        return Response({'message':'Category deleted successfully.'},status=200)
+
+

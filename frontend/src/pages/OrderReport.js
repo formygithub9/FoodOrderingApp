@@ -3,15 +3,17 @@ import { useNavigate } from 'react-router-dom'
 import AdminLayout from '../components/AdminLayout'
 import { toast, ToastContainer } from 'react-toastify';
 import { Link } from 'react-router-dom';
+import 'react-toastify/dist/ReactToastify.css'
 
 const OrderReport = () => {
     const[orders,setOrders] = useState([])
-    const adminUser = localStorage.getItem('adminUser');
     const[formData,setFormData] = useState({
         from_date: '',
         to_date: '',
         status:'all',
     })
+    
+    const adminUser = localStorage.getItem('adminUser');   
     const navigate = useNavigate();
     
     useEffect(() => {
