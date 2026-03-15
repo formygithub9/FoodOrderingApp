@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import AdminLayout from '../components/AdminLayout';
 import { Link } from 'react-router-dom';
 import { CSVLink } from 'react-csv';
+import { toast, ToastContainer } from 'react-toastify';
 
 const ManageFood = () => {
     const [foods,setFoods] = useState([])
@@ -26,8 +27,25 @@ const ManageFood = () => {
             setFoods(filtered)
         }    
       }
+
+    const handleDelete=(id)=>{
+    
+        if(window.confirm("Are you sure to delete this food item ?")){
+            fetch(`http://127.0.0.1:8000/api/delete-food/${id}/`,{
+                method:'DELETE',
+            })
+            .then(res=>res.json())
+            .then(data=>{
+                toast.success(data.message);
+                setFoods(foods.filter(food=>food.id!==id));
+            })
+            .catch(err=>console.error(err))
+        }
+      
+  }
   return (
     <AdminLayout>
+        <ToastContainer position="top-right" autoClose={2000}/>
         <div>
             <h3 className='text-center text-primary'>
                 <i className='fas fa-list-alt me-1'></i>
@@ -61,9 +79,9 @@ const ManageFood = () => {
                         <td>{food.category_name}</td>
                         <td>{food.item_name}</td>
                         <td>
-                            <Link className="btn btn-sm btn-outline-primary me-2"><i className='fas fa-edit me-1'></i> Edit</Link>
+                            <Link to={`/edit_food/${food.id}`} className="btn btn-sm btn-outline-primary me-2"><i className='fas fa-edit me-1'></i> Edit</Link>
 
-                            <button className='btn btn-sm btn-outline-danger'>
+                            <button onClick={()=> handleDelete(food.id)} className='btn btn-sm btn-outline-danger'>
                                 <i className='fas fa-trash-alt me-1'></i>Delete
                             </button>
                         </td>
