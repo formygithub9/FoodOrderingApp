@@ -408,6 +408,22 @@ def edit_food(request,id):
         if serializer.is_valid():
             serializer.save()
         return Response({'message':'Food item updated successfully.'},status=200)
+
+@api_view(['GET'])
+def list_users(request):
+    users = User.objects.all().order_by('-id')
+    serializer = UserSerializer(users,many=True)
+    return Response(serializer.data)
+
+@api_view(['DELETE'])
+def delete_user(request,id):
+    try:
+        user = User.objects.get(id=id)
+        user.delete()
+        return Response({'message':'User deleted successfully.'},status=200)
+    except User.DoesNotExist:
+        return Response({'error':'User Not Found'}, status=404)
+
     
     
 

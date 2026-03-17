@@ -37,4 +37,6 @@ urlpatterns = [
     path('category/<int:id>/',category_detail),
     path('delete-food/<int:id>/',delete_food),
     path('edit-food/<int:id>/',edit_food),
+    path('users/',list_users),
+    path('delete_user/<int:id>/',delete_user),
 ]
