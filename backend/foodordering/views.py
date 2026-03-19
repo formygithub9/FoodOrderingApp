@@ -424,6 +424,26 @@ def delete_user(request,id):
     except User.DoesNotExist:
         return Response({'error':'User Not Found'}, status=404)
 
+from django.utils.timezone import now,timedelta    
+@api_view(['GET'])
+def dashboard_metrics(request):
+    data = {
+        'total_orders' : OrderAddress.objects.count(),
+        'new_orders' : OrderAddress.objects.filter(order_final_status__isnull=True).count(),
+        'confirm_orders' : OrderAddress.objects.filter(order_final_status="Order Confirmed").count(),
+        'food_preparing' : OrderAddress.objects.filter(order_final_status="Food being prepared").count(),
+        'food_pickup' : OrderAddress.objects.filter(order_final_status="Food Pickup").count(),
+        'food_delivered' : OrderAddress.objects.filter(order_final_status="Food Delivered").count(),
+        'cancelled_orders' : OrderAddress.objects.filter(order_final_status="Order Cancelled").count(),
+        'total_users' : User.objects.count(),
+        'total_categories' : Category.objects.count(),
+        'total_foods' : Food.objects.count(),
+        'total_reviews' : Review.objects.count(),
+        'total_wishlist' : Wishlist.objects.count(),
+    }
+
+    return Response(data,status=200)
+
     
     
 
