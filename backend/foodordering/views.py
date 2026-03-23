@@ -425,7 +425,7 @@ def delete_user(request,id):
         return Response({'error':'User Not Found'}, status=404)
 
 from django.utils.timezone import now,timedelta,make_aware
-from django.db.models import Sum,F
+from django.db.models import Sum,F,DecimalField
 from datetime import datetime   
 @api_view(['GET'])
 def dashboard_metrics(request):
@@ -461,10 +461,32 @@ def dashboard_metrics(request):
 
     return Response(data,status=200)
 
+from decimal import Decimal
+from collections import defaultdict
+from django.db.models.functions import TruncMonth,Coalesce
 @api_view(['GET'])
 def monthly_sales_summary(request):
-    pass
+    orders = Order.objects.filter(is_order_placed=True).values('order_number').annotate(total_price=Coalesce(Sum(F('quantity') * F('food__item_price'),output_field=DecimalField(max_digits=12,decimal_places=2)),Decimal('0.00')))
+    order_price_map={
+        o['order_number']:o['total_price'] for o in orders
+    }
+    #Month Resolve
+    addresses = (
+        OrderAddress.objects.filter(order_number__in=order_price_map.keys()).annotate(month=TruncMonth('order_time')).values('month','order_number')
+    )
+
+    month_total = defaultdict(lambda: Decimal('0.00'))
+    
+    for addr in addresses:
+        label = addr['month'].strftime('%b')
+        month_total[label] += order_price_map.get(addr['order_number'],Decimal('0.00'))
 
     
-    
+    result = [{'month':m,'sales':total} for m,total in month_total.items()]
+    return Response(result)
 
+@api_view(['GET'])
+def top_selling_foods(request):
+    top_foods = Order.objects.filter(is_order_placed=True).values('food__item_name').annotate(total_sold=Sum('quantity')).order_by('-total_sold')[:5]
+    return Response(top_foods)
+ 

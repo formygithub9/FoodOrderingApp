@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import AdminLayout from '../components/AdminLayout';
 import { useNavigate } from 'react-router-dom';
 import '../styles/AdminDashboard.css'
+import SalesBarChart from '../components/SalesBarChart';
+import TopProducts from '../components/TopProducts';
 
 const AdminDashboard = () => {
   const adminUser = localStorage.getItem('adminUser');
@@ -71,6 +73,14 @@ const AdminDashboard = () => {
             </div>
           </div>
         ))}
+      </div>
+      <div class="row mt-4">
+        <div class="col-md-6">
+          <SalesBarChart/>  
+        </div>
+        <div class="col-md-6">
+          <TopProducts/>
+        </div>
       </div>
     </AdminLayout>
   );
