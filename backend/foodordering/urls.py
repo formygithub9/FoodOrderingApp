@@ -42,4 +42,6 @@ urlpatterns = [
     path('dashboard_metrics/',dashboard_metrics),
     path('monthly_sales_summary/',monthly_sales_summary),
     path('top_selling_foods/',top_selling_foods),
+    path('weekly_sales_summary/',weekly_sales_summary),
+    path('weekly_user_registrations/',weekly_user_registrations),
 ]

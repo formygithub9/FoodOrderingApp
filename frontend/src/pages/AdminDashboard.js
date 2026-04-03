@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/AdminDashboard.css'
 import SalesBarChart from '../components/SalesBarChart';
 import TopProducts from '../components/TopProducts';
+import WeeklySalesChart from '../components/WeeklySalesChart';
+import WeeklyUserChart from '../components/WeeklyUserChart';
 
 const AdminDashboard = () => {
   const adminUser = localStorage.getItem('adminUser');
@@ -80,6 +82,14 @@ const AdminDashboard = () => {
         </div>
         <div class="col-md-6">
           <TopProducts/>
+        </div>
+      </div>
+      <div class="row mt-4">
+        <div class="col-md-6">
+          <WeeklySalesChart/>  
+        </div>
+        <div class="col-md-6">
+          <WeeklyUserChart/>
         </div>
       </div>
     </AdminLayout>

@@ -463,7 +463,8 @@ def dashboard_metrics(request):
 
 from decimal import Decimal
 from collections import defaultdict
-from django.db.models.functions import TruncMonth,Coalesce
+from django.db.models.functions import TruncMonth,Coalesce,TruncWeek
+
 @api_view(['GET'])
 def monthly_sales_summary(request):
     orders = Order.objects.filter(is_order_placed=True).values('order_number').annotate(total_price=Coalesce(Sum(F('quantity') * F('food__item_price'),output_field=DecimalField(max_digits=12,decimal_places=2)),Decimal('0.00')))
@@ -490,3 +491,32 @@ def top_selling_foods(request):
     top_foods = Order.objects.filter(is_order_placed=True).values('food__item_name').annotate(total_sold=Sum('quantity')).order_by('-total_sold')[:5]
     return Response(top_foods)
  
+@api_view(['GET'])
+def weekly_sales_summary(request):
+    orders = Order.objects.filter(is_order_placed=True).values('order_number').annotate(total_price=Coalesce(Sum(F('quantity') * F('food__item_price'),output_field=DecimalField(max_digits=12,decimal_places=2)),Decimal('0.00')))
+    
+    #Step 2 :
+    order_price_map={
+        o['order_number']:o['total_price'] for o in orders
+    }
+    #Month Resolve
+    addresses = (
+        OrderAddress.objects.filter(order_number__in=order_price_map.keys()).annotate(week=TruncWeek('order_time')).values('week','order_number')
+    )
+
+    weekly_totals = defaultdict(lambda: Decimal('0.00'))
+    
+    for addr in addresses:
+        label = addr['week'].strftime('Week %W')
+        weekly_totals[label] += order_price_map.get(addr['order_number'],Decimal('0.00'))
+
+    
+    result = [{'week':w,'sales':total} for w,total in weekly_totals.items()]
+    return Response(result)
+
+from django.db.models import Count
+@api_view(['GET'])
+def weekly_user_registrations(request):
+    data = (User.objects.annotate(week=TruncWeek('reg_date')).values('week').annotate(new_users = Count('id')).order_by('week'))
+    result = [{"week": entry['week'].strftime('Week %W'),"new_users":entry['new_users']} for entry in data] 
+    return Response(result)

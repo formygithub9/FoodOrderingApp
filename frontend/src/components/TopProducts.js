@@ -8,7 +8,7 @@ const TopProducts = () => {
         .then(data=>{
             setTopFoods(data)
         })
-    })
+    },[]);
   return (
     <div className='card p-3 shadow'>
         <div class="card-header bg-success text-white">
