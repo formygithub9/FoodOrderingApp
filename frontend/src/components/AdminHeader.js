@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { FaBars, FaBell, FaChevronLeft, FaChevronRight, FaSignOutAlt } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
-const AdminHeader = ({ toggleSidebar , sidebarOpen}) => {
+const AdminHeader = ({ toggleSidebar , sidebarOpen , newOrders }) => {
 
     const navigate = useNavigate()
     const handleLogout = () => {
@@ -24,8 +24,13 @@ const AdminHeader = ({ toggleSidebar , sidebarOpen}) => {
         <div className="collapse navbar-collapse">
             <ul className='navbar-nav ms-auto align-items-center gap-3'>
                 <li className='nav-item'>
-                    <button className='btn btn-outline-secondary'>
+                    <button className='btn btn-outline-secondary position-relative' onClick={()=>{
+                        if(newOrders){
+                            navigate('/orders-not-confirmed')
+                        }
+                    }} title={newOrders ? 'View New Orders' : 'No New Orders' }>
                         <FaBell/>
+                        <span className='badge bg-danger position-absolute top-0 start-100 translate-middle'>{newOrders}</span>
                     </button>
                 </li>
                 <li className='nav-item'>

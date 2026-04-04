@@ -3,11 +3,13 @@ import PublicLayout from '../components/PublicLayout'
 import { toast, ToastContainer } from 'react-toastify'
 import { useNavigate } from 'react-router-dom';
 import { FaMinus, FaPlus, FaShoppingCart, FaTrash } from 'react-icons/fa';
+import { useCart } from '../context/CartContext';
 
 const Cart = () => {
   const userId = localStorage.getItem('userId');
   const [cartItems, setCartItems] = useState([]);
   const [grandTotal, setGrandTotal] = useState(0);
+  const {setCartCount} = useCart();
   const navigate = useNavigate();
 
   useEffect(()=>{
@@ -43,6 +45,7 @@ const Cart = () => {
         const updated = await fetch(`http://127.0.0.1:8000/api/cart/${userId}`)
         const data = await updated.json();
         setCartItems(data);
+        setCartCount(data.length);
         const total = data.reduce((sum,item) => sum + item.food.item_price * item.quantity, 0)
         setGrandTotal(total);
       }
@@ -71,6 +74,7 @@ const Cart = () => {
         setCartItems(data);
         const total = data.reduce((sum,item) => sum + item.food.item_price * item.quantity, 0)
         setGrandTotal(total);
+        setCartCount(data.length);
       }
       else{
         toast.error('Something went wrong.');

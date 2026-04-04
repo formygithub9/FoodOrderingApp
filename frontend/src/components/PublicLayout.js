@@ -2,19 +2,30 @@ import React, {useEffect, useState} from 'react';
 import { FaCogs, FaHeart, FaHome, FaShoppingCart, FaSignInAlt, FaSignOutAlt, FaTruck, FaUser, FaUserCircle, FaUserPlus, FaUserShield, FaUtensils } from 'react-icons/fa'
 import { Link, useNavigate } from 'react-router-dom'
 import '../styles/layout.css'
+import { useCart } from '../context/CartContext';
 
 const PublicLayout = ({children}) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState('');
+  const {cartCount, setCartCount} = useCart();
 
   const navigate = useNavigate();
   const userId =localStorage.getItem("userId");
   const name =localStorage.getItem("userName");
 
+  const fetchCartCount = async () => {
+    if (userId) {
+      const res = await fetch(`http://127.0.0.1:8000/api/cart/${userId}`);
+      const data = await res.json();
+      setCartCount(data.length);
+    }
+  }
+
   useEffect(()=>{
     if (userId) {
       setIsLoggedIn(true);
       setUserName(name);
+      fetchCartCount();
     }
   },[userId]);
 
@@ -22,6 +33,7 @@ const PublicLayout = ({children}) => {
     localStorage.removeItem("userId");
     localStorage.removeItem("userName");
     setIsLoggedIn(false);
+    setCartCount(0);
     navigate('/login');
   }
   return (
@@ -38,7 +50,7 @@ const PublicLayout = ({children}) => {
                 <Link to='/' className="nav-link" ><FaHome className='me-1'/> Home</Link>
               </li>
               <li className="nav-item">
-                <Link to='' className="nav-link mx-1" ><FaUtensils className='me-1'/> Menu</Link>
+                <Link to='/food-menu' className="nav-link mx-1" ><FaUtensils className='me-1'/> Menu</Link>
               </li>
               <li className="nav-item">
                 <Link to='' className="nav-link mx-1" ><FaTruck className='me-1'/> Track</Link>
@@ -61,7 +73,7 @@ const PublicLayout = ({children}) => {
                     <Link to='/my-orders' className="nav-link mx-1" ><FaUser className='me-1'/> My Orders</Link>
                   </li> 
                   <li className="nav-item">
-                    <Link to='/cart' className="nav-link mx-1" ><FaShoppingCart className='me-1'/> Cart</Link>
+                    <Link to='/cart' className="nav-link mx-1" ><FaShoppingCart className='me-1'/> Cart {cartCount > 0 && (<span>({cartCount})</span>)}</Link>
                   </li> 
                   <li className="nav-item">
                     <Link to='#' className="nav-link mx-1" ><FaHeart className='me-1'/> Wishlist</Link>
