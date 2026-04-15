@@ -520,3 +520,23 @@ def weekly_user_registrations(request):
     data = (User.objects.annotate(week=TruncWeek('reg_date')).values('week').annotate(new_users = Count('id')).order_by('week'))
     result = [{"week": entry['week'].strftime('Week %W'),"new_users":entry['new_users']} for entry in data] 
     return Response(result)
+
+@api_view(['POST'])
+def add_to_wishlist(request):
+    user_id = request.data.get('user_id')
+    food_id = request.data.get('food_id')
+    obj,created = Wishlist.objects.get_or_create(user_id=user_id,food_id=food_id)
+    if created :
+        return Response({"message":"Added to wishlist"},status=201)
+    else :
+        return Response({"message":"Already in wishlist"},status=200)
+
+@api_view(['POST'])
+def remove_to_wishlist(request):
+    user_id = request.data.get('user_id')
+    food_id = request.data.get('food_id')
+    try:
+        Wishlist.objects.get(user_id=user_id,food_id=food_id).delete()
+        return Response({"message":"Remove from wishlist"},status=200)
+    except Wishlist.DoesNotExist:
+        return Response({"message":"Item not found in wishlist"},status=404)

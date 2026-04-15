@@ -12,6 +12,14 @@ input::placeholder{
     font-style: italic;
 }
 
+.heart-anim{
+    transition: 0.2s ease;
+}
+
+.heart-anim:hover{
+    transform: scale(1.2);
+}
+
 @media (max-width:768px){
     .hero{
         min-height: 300px;

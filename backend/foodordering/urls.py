@@ -44,4 +44,5 @@ urlpatterns = [
     path('top_selling_foods/',top_selling_foods),
     path('weekly_sales_summary/',weekly_sales_summary),
     path('weekly_user_registrations/',weekly_user_registrations),
+    path('wishlist/add/',add_to_wishlist),
 ]

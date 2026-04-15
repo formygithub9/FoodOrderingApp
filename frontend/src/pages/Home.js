@@ -38,7 +38,10 @@ function Home() {
                     foods.map((food)=>(
                         <div className='col-md-4 mb-4'>
                         <div className="card hovereffect">
-                            <img src={`http://127.0.0.1:8000${food.image}`} className='card-img-top' style={{ height: '200px', objectFit: 'cover' }} alt="food_img" />
+                            <div className='position-relative'>
+                              <img src={`http://127.0.0.1:8000${food.image}`} className='card-img-top' style={{ height: '200px', objectFit: 'cover' }} alt="food_img" />
+                              <i className="fas fa-heart heart-anim position-absolute top-0 end-0 m-2 text-danger d-flex align-items-center justify-content-center" style={{width: '30px', height: '30px', cursor: 'pointer', fontSize: '20px', background: 'white', padding: '5px', borderRadius: '50%' }}></i>
+                            </div>
                             <div className='card-body'>
                                 <h5 className='card-title'>
                                     <Link to={`/food/${food.id}`}>{food.item_name}</Link>
