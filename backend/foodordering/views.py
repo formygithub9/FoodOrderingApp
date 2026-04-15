@@ -540,3 +540,10 @@ def remove_to_wishlist(request):
         return Response({"message":"Remove from wishlist"},status=200)
     except Wishlist.DoesNotExist:
         return Response({"message":"Item not found in wishlist"},status=404)
+
+@api_view(['GET'])
+def get_wishlist(request,user_id):
+    wishlist_items = Wishlist.objects.filter(user_id=user_id)
+    serializer = WishlistSerializer(wishlist_items,many=True)
+    return Response(serializer.data)
+
