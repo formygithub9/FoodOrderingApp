@@ -532,7 +532,7 @@ def add_to_wishlist(request):
         return Response({"message":"Already in wishlist"},status=200)
 
 @api_view(['POST'])
-def remove_to_wishlist(request):
+def remove_from_wishlist(request):
     user_id = request.data.get('user_id')
     food_id = request.data.get('food_id')
     try:

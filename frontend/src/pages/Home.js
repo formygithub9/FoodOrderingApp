@@ -2,9 +2,12 @@ import React, {useEffect, useState} from 'react'
 import PublicLayeout from '../components/PublicLayout'
 import '../styles/Home.css'
 import { Link } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify'
 
 function Home() {
   const [foods, setFoods] = useState([]);
+  const [wishlist, setWishlist] = useState([]);
+  const userId = localStorage.getItem('userId');
   useEffect(()=>{
       fetch(`http://127.0.0.1:8000/api/random_foods/`)
           .then(res => res.json())
@@ -12,8 +15,51 @@ function Home() {
               setFoods(data)
           })
     },[]);
+  useEffect(()=>{
+    if(userId){
+      fetch(`http://127.0.0.1:8000/api/wishlist/${userId}`)
+          .then(res => res.json())
+          .then(data => {
+            const wishlistIds = data.map(item => item.food_id);
+              setWishlist(wishlistIds)
+          })
+    }  
+    },[userId]);
+
+    const toggleWishlist = async(foodId) => {
+      if (!userId) {
+        toast.info("Please Login to use Wishlist.");
+        return;
+      }
+      const isWishlisted = wishlist.includes(foodId);
+
+      const endpoint = isWishlisted ? 'remove' : 'add'
+
+      try{
+          const response = await fetch(`http://127.0.0.1:8000/api/wishlist/${endpoint}/`,{
+            method : 'POST',
+            headers : {'Content-Type' : 'application/json'},
+            body : JSON.stringify({
+              user_id : userId,
+              food_id : foodId
+            })
+          })
+          if(response.ok){
+              setWishlist(prev=>isWishlisted ? prev.filter(id=>id!==foodId) : [...prev,foodId]);
+              toast.success(isWishlisted ? 'Removed from Wishlist' : 'Added to Wishlist');
+            }
+          else{
+            toast.error("Failed to update Wishlist.")
+          }
+      }
+      catch(error)
+      {
+        toast.error('Something went wrong.');
+      }
+    }
   return (
     <PublicLayeout>
+      <ToastContainer position='top-center' autoClose={2000}></ToastContainer>
       <section className='hero py-5 text-center' style={{backgroundImage:"url('/images/food2.jpg')"}}>
         <div style={{
           backgroundColor:"rgba(0,0,0,0.5)",padding:"40px 20px",
@@ -40,7 +86,18 @@ function Home() {
                         <div className="card hovereffect">
                             <div className='position-relative'>
                               <img src={`http://127.0.0.1:8000${food.image}`} className='card-img-top' style={{ height: '200px', objectFit: 'cover' }} alt="food_img" />
-                              <i className="fas fa-heart heart-anim position-absolute top-0 end-0 m-2 text-danger d-flex align-items-center justify-content-center" style={{width: '30px', height: '30px', cursor: 'pointer', fontSize: '20px', background: 'white', padding: '5px', borderRadius: '50%' }}></i>
+                              <i className={`${wishlist.includes(food.id) ? 'fas' : 'far'} fa-heart heart-anim position-absolute top-0 end-0 m-2 text-danger d-flex align-items-center justify-content-center`} 
+                                style={{
+                                  width: '30px', 
+                                  height: '30px', 
+                                  cursor: 'pointer', 
+                                  fontSize: '20px', 
+                                  background: 'white', 
+                                  padding: '5px', 
+                                  borderRadius: '50%' 
+                                  }}
+                                onClick={()=>toggleWishlist(food.id)}  
+                                ></i>
                             </div>
                             <div className='card-body'>
                                 <h5 className='card-title'>
