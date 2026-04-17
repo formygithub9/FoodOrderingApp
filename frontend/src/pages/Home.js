@@ -3,10 +3,12 @@ import PublicLayeout from '../components/PublicLayout'
 import '../styles/Home.css'
 import { Link } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify'
+import { useWishlist } from '../context/WishlistContext';
 
 function Home() {
   const [foods, setFoods] = useState([]);
   const [wishlist, setWishlist] = useState([]);
+  const {wishlistCount, setWishlistCount} = useWishlist();
   const userId = localStorage.getItem('userId');
   useEffect(()=>{
       fetch(`http://127.0.0.1:8000/api/random_foods/`)
@@ -46,6 +48,11 @@ function Home() {
           })
           if(response.ok){
               setWishlist(prev=>isWishlisted ? prev.filter(id=>id!==foodId) : [...prev,foodId]);
+
+              const updatedCount = await fetch(`http://127.0.0.1:8000/api/wishlist/${userId}`);
+              const wishlistData = await updatedCount.json();
+              setWishlistCount(wishlistData.length);
+              
               toast.success(isWishlisted ? 'Removed from Wishlist' : 'Added to Wishlist');
             }
           else{
