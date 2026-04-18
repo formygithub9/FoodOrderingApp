@@ -65,7 +65,7 @@ const PublicLayout = ({children}) => {
                 <Link to='/food-menu' className="nav-link mx-1" ><FaUtensils className='me-1'/> Menu</Link>
               </li>
               <li className="nav-item">
-                <Link to='' className="nav-link mx-1" ><FaTruck className='me-1'/> Track</Link>
+                <Link to='/track' className="nav-link mx-1" ><FaTruck className='me-1'/> Track</Link>
               </li>
               {!isLoggedIn ? (
                 <>

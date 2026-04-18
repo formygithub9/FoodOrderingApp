@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import PublicLayeout from '../components/PublicLayout'
+import PublicLayout from '../components/PublicLayout'
 import '../styles/Home.css'
 import { Link } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify'
@@ -65,7 +65,7 @@ function Home() {
       }
     }
   return (
-    <PublicLayeout>
+    <PublicLayout>
       <ToastContainer position='top-center' autoClose={2000}></ToastContainer>
       <section className='hero py-5 text-center' style={{backgroundImage:"url('/images/food2.jpg')"}}>
         <div style={{
@@ -153,7 +153,7 @@ function Home() {
           Browse Full Menu
         </Link>
       </section>
-    </PublicLayeout>
+    </PublicLayout>
   )
 }
 

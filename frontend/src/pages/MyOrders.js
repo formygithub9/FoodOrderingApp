@@ -43,7 +43,7 @@ const MyOrders = () => {
                   <span className='badge bg-secondary'>{order.order_final_status}</span>      
                 </div>
                 <div className='mt-3 mt-md-0'>
-                  <Link className='btn btn-outline-secondary btn-sm me-2'>
+                  <Link className='btn btn-outline-secondary btn-sm me-2' to={`/track-order/${order.order_number}`}>
                     <FaMapMarkerAlt/> Track
                   </Link>
 
