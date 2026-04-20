@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import PublicLayout from '../components/PublicLayout';
 import { useNavigate, useParams } from 'react-router-dom';
+import CancelOrderModal from '../components/CancelOrderModal';
 
 const OrderDetails = () => {
     const userId = localStorage.getItem('userId');
     const [orderItems, setOrderItems] = useState([]);
     const [orderAddress, setorderAddress] = useState(null);
     const [total, setTotal] = useState(0);
+    const [showCancelModal, setShowCancelModal] = useState(false);
+    const handleCloseModal = () => setShowCancelModal(false);
     const navigate = useNavigate();
     const {order_number} = useParams();
 
@@ -65,14 +68,24 @@ const OrderDetails = () => {
                             <p><strong>Status:</strong> {orderAddress.order_final_status || 'Waiting for Restaurant Confirmation'}</p>
                             <p><strong>Payment Mode:</strong> <span className='badge bg-info text-dark ms-2'>{orderAddress.payment_mode}</span></p>
                             <p><strong>Total:</strong> ₹{total}</p>
-
                             <a href={`http://127.0.0.1:8000/api/invoice/${order_number}`} target='_blank' className='btn btn-primary w-100 my-2'>
                                 <i className='fas fa-file-invoice me-2'></i>Invoice
                             </a>
+                            {orderAddress && (
+                                <>
+                                    <CancelOrderModal show={showCancelModal} handleClose={handleCloseModal} orderNumber={order_number} payment_mode={orderAddress.payment_mode} />
 
-                            <a href="" target='_blank' className='btn btn-danger w-100'>
-                                <i className='fas fa-times-circle me-2'></i> Cancel Order
-                            </a>
+                                    {(orderAddress.order_final_status === null || orderAddress.order_final_status === 'Order Confirmed' || orderAddress.order_final_status === 'Food being Prepared') ? (
+                                        <a onClick={()=>setShowCancelModal(true)} className='btn btn-danger w-100'>
+                                            <i className='fas fa-times-circle me-2'></i> Cancel Order
+                                        </a>
+                                    ) : (
+                                        <p class="text-danger mt-2">
+                                            Order can't be cancelled. (Current Status: {orderAddress.order_final_status})
+                                        </p>
+                                    ) }
+                                </>
+                            )}
                         </div>
                     )}
                 </div>
