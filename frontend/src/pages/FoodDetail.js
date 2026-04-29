@@ -86,7 +86,7 @@ const FoodDetail = () => {
             comment
         };
 
-        const url = editId ? `http://127.0.0.1:8000/api/review_edit/${editId}` : `http://127.0.0.1:8000/api/reviews/add/${id}`
+        const url = editId ? `http://127.0.0.1:8000/api/review_edit/${editId}/` : `http://127.0.0.1:8000/api/reviews/add/${id}/`
 
         const method = editId ? 'PUT' : 'POST';
 
@@ -94,7 +94,7 @@ const FoodDetail = () => {
             const response = await fetch(url,{
                 method,
                 headers: { 'Content-Type': 'application/json'},
-                body: JSON.stringify({payload})
+                body: JSON.stringify(payload)
             });
 
             if (response.ok) {
@@ -121,7 +121,7 @@ const FoodDetail = () => {
         setReviews(data);
     }
     
-    const handleDeleteReview = async () => {
+    const handleDeleteReview = async (id) => {
         const confirmDelete = window.confirm('Are you sure to delete this review ?');
         if (! confirmDelete) return;
         const res = await fetch(`http://127.0.0.1:8000/api/review_edit/${id}/`,{
@@ -140,9 +140,22 @@ const FoodDetail = () => {
         const stars = []
         for (let i=1; i<=5; i++){
             stars.push(
-                <i key={i} className={`fa-star ${i<=(hoveredRating || count) ? 'fas text-warning'}` : 'far text-secondary' }></i>
+                <i key={i} 
+                className={`fa-star ${i<=(hoveredRating || count) ? 'fas text-warning' : 'far text-secondary' }`} 
+                style={{cursor : clickable ? 'pointer' : 'default', fontSize : '20px', marginRight : '4px'}} 
+                onClick={clickable ? () => setRating(i) : undefined} 
+                onMouseEnter={clickable ? ()=> setHoveredRating(i) : undefined}
+                onMouseLeave={clickable ? ()=> setHoveredRating(0) : undefined}
+
+                ></i>
             )
         }
+        return stars;    }
+
+    const handleEditReview = (rev) => {
+        setRating(rev.rating);
+        setComment(rev.comment);
+        setEditId(rev.id);
     }
 
   if(!food) return <div>Loading...</div>
@@ -176,6 +189,54 @@ const FoodDetail = () => {
                         </div>
                     ) }
                 </div>
+            </div>
+            <hr />
+            <div className="mt-4">
+                <h4>Customer Reviews</h4>
+                {reviews.length === 0 ? (
+                    <p className="text-muted fst-italic">No reviews yet. Be the first to share your thoughts!</p>
+                ) : (
+                    reviews.map((rev) => (
+                        <div className="border-bottom mb-3 pb-2">
+                            <div className="d-flex justify-content-between">
+                                <div>
+                                    <strong>{rev.user_name}</strong> <span className="ms-2">{renderStars(rev.rating)}</span>
+                                </div>
+                                
+                                {rev.user.toString() === userId && (
+                                    <div>
+                                        <i className="fas fa-edit text-primary me-2"
+                                            style={{cursor:'pointer', fontSize:'14px'}}
+                                            title='Edit'
+                                            onClick={() => handleEditReview(rev)}
+                                        ></i>
+
+                                        <i className="fas fa-trash-alt text-danger me-2"
+                                            style={{cursor:'pointer', fontSize:'14px'}}
+                                            title='Delete'
+                                            onClick={() => handleDeleteReview(rev.id)}
+                                        ></i>
+                                    </div>
+                                )}
+                            </div>
+                            <div>
+                                <p className='mb-1'>{rev.comment}</p>
+                                <p className='text-muted'>{new Date(rev.created_at).toLocaleString()}</p>
+                            </div>
+                        </div>
+                    ))
+                )}
+            </div>
+            <div className="mt-5">
+                <h5><i className="fas fa-pen me-1"></i> Write a Review </h5>
+                <div className="mb-3">
+                    <label className="form-label">Your Rating</label>
+                    <div>{renderStars(rating,true)}</div>
+                </div>
+                <div className="mb-3">
+                    <textarea placeholder='Write your review...' rows={3} value={comment} onChange={(e)=>setComment(e.target.value)} className="form-control"/>
+                </div>
+                <button className="btn btn-success" onClick={handleReviewSubmit}> <i className="fas fa-paper-plane"></i> Submit Review</button>
             </div>
         </div>
     </PublicLayout>

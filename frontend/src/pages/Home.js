@@ -9,6 +9,9 @@ function Home() {
   const [foods, setFoods] = useState([]);
   const [wishlist, setWishlist] = useState([]);
   const {wishlistCount, setWishlistCount} = useWishlist();
+  const [ratings,setRatings] = useState({});
+  const [hovered,setHovered] = useState(null);
+
   const userId = localStorage.getItem('userId');
   useEffect(()=>{
       fetch(`http://127.0.0.1:8000/api/random_foods/`)
@@ -27,6 +30,21 @@ function Home() {
           })
     }  
     },[userId]);
+
+    useEffect(()=>{
+      const fetchAllRatings = async () => {
+        const allRatings = {};
+        for (let food of foods){
+          const res = fetch(`http://127.0.0.1:8000/api/food_rating_summary/${food.id}/`);
+          const data = await res.json();
+          allRatings[food.id] = data;
+        }
+        setRatings(allRatings);
+      }
+      if(foods.length > 0){
+        fetchAllRatings();
+      }
+    },[foods]);
 
     const toggleWishlist = async(foodId) => {
       if (!userId) {

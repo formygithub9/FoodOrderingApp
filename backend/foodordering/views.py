@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate
 from rest_framework.response import Response
 from .models import *
 from .serializers import *
-from django.db.models import Q
+from django.db.models import Q, Count, Avg
 
 from rest_framework.parsers import MultiPartParser,FormParser
 
@@ -571,3 +571,68 @@ def cancel_order(request,order_number):
     address.order_final_status = 'Order Cancelled'
     address.save()
     return Response({'message':'Order Cancelled Successfully.'}, status=200)
+
+@api_view(['POST'])
+def add_review(request,food_id):
+    print(request.data)
+    print(food_id)
+    user_id = request.data.get('user_id')
+    rating = request.data.get('rating')
+    comment = request.data.get('comment')
+    try:
+        user = User.objects.get(id = user_id)
+        food = Food.objects.get(id = food_id)
+
+    except (User.DoesNotExist, Food.DoesNotExist):
+        return Response({'message':"User or Food not found "}, status=404)
+    
+    Review.objects.create(
+        user = user,
+        food = food,
+        rating = rating,
+        comment = comment
+    )
+
+    return Response({'message':"Review Submitted."}, status=201)
+
+@api_view(['GET'])
+def food_reviews(request,food_id):
+    reviews = Review.objects.filter(food_id=food_id).order_by('-created_at')
+    serializer = ReviewSerializer(reviews,many=True)
+    return Response(serializer.data)
+
+@api_view(['DELETE','PUT'])
+def review_detail(request,id):
+    try:
+        review = Review.objects.get(id=id)
+    except Review.DoesNotExist:
+        return Response({"message":"Review not found."},status=404)
+    
+    if request.method == 'DELETE':
+        review.delete()
+        return Response({"message":"Review deleted."},status=200)
+    
+    if request.method == 'PUT':
+        data = {
+            "rating":request.data.get("rating",review.rating),
+            "comment":request.data.get("comment",review.comment),
+        }
+        serializer=ReviewSerializer(review,data=data,partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message":"Review Updated."},status=200)
+        
+        return Response(serializer.errors,status=400)
+    
+@api_view(['GET'])
+def food_rating_summary(request,food_id):
+    reviews = Review.objects.filter(food_id = food_id)
+    rating_summary = reviews.values('rating').annotate(count=Count('rating')).order_by('-rating')
+    average = reviews.aggregate(average= Avg('rating'))['average'] or 0
+    total_reviews = reviews.count()
+    return Response({
+        'average' : round(average,1),
+        'total_reviews' : total_reviews,
+        'breakdown' : {entry['rating'] for entry in rating_summary}
+    })
+    

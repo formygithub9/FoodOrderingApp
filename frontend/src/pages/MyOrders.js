@@ -18,6 +18,15 @@ const MyOrders = () => {
             setOrders(data);
           })
     },[userId]);
+
+    const getStatusBadge = (status) => {
+      const statusLower = status.toLowerCase();
+      if(statusLower.includes("delivered")) return 'success';
+      if(statusLower.includes("cancel")) return 'danger';
+      if(statusLower.includes("confirmed")) return 'info';
+      if(statusLower.includes("prepared")) return 'warning';
+      return 'secondary';
+    }
   return (
     <PublicLayout>
       <div className="container py-5">
@@ -40,7 +49,7 @@ const MyOrders = () => {
                   <p className="text-muted">
                     <strong>Date:</strong> {new Date(order.order_time).toLocaleString()}
                   </p>
-                  <span className='badge bg-secondary'>{order.order_final_status}</span>      
+                  <span className={`badge bg-${getStatusBadge(order.order_final_status)}`}>{order.order_final_status}</span>      
                 </div>
                 <div className='mt-3 mt-md-0'>
                   <Link className='btn btn-outline-secondary btn-sm me-2' to={`/track-order/${order.order_number}`}>
