@@ -35,7 +35,7 @@ function Home() {
       const fetchAllRatings = async () => {
         const allRatings = {};
         for (let food of foods){
-          const res = fetch(`http://127.0.0.1:8000/api/food_rating_summary/${food.id}/`);
+          const res = await fetch(`http://127.0.0.1:8000/api/food_rating_summary/${food.id}/`);
           const data = await res.json();
           allRatings[food.id] = data;
         }
@@ -129,6 +129,31 @@ function Home() {
                                     <Link to={`/food/${food.id}`}>{food.item_name}</Link>
                                 </h5>
                                 <p className='card-text text-muted'>{food.item_description?.slice(0,40)} {food.item_description?.length>40 && '...'}</p>
+                                {ratings[food.id] && (
+                                  <div class="mb-2"
+                                    onMouseEnter={()=>setHovered(food.id)}
+                                    onMouseLeave={()=>setHovered(null)}
+                                    >
+                                    <div>
+                                      <span class="text-warning">
+                                        {Array(Math.round(ratings[food.id].average)).fill().map((_,i)=>(
+                                          <i key={i} class="fas fa-star"></i>
+                                        ))}
+                                        {Array(5-Math.round(ratings[food.id].average)).fill().map((_,i)=>(
+                                          <i key={i} class="far fa-star"></i>
+                                        ))}
+                                      </span>
+                                      <small class="text-muted ms-2">
+                                        {ratings[food.id].average} ({ratings[food.id].total_reviews} ratings)
+                                      </small>
+                                    </div>
+                                    {hovered === food.id && ratings[food.id].breakdown && (
+                                      <div class="hover-popup">
+                                        
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
                                 <div className='d-flex justify-content-between align-items-center'>
                                     <span className='fw-bold'>₹ {food.item_price}</span>
                                     {food.is_available ? (
