@@ -20,6 +20,10 @@ input::placeholder{
     transform: scale(1.2);
 }
 
+.hover-popup{
+    animation: fadeIn 0.2s ease-in-out;
+}
+
 @media (max-width:768px){
     .hero{
         min-height: 300px;

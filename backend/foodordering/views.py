@@ -633,6 +633,7 @@ def food_rating_summary(request,food_id):
     return Response({
         'average' : round(average,1),
         'total_reviews' : total_reviews,
-        'breakdown' : {entry['rating'] for entry in rating_summary}
-    })
+        'breakdown' : {entry['rating']: entry['count'] for entry in rating_summary}
+    }
+    )
     

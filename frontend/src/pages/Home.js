@@ -130,7 +130,7 @@ function Home() {
                                 </h5>
                                 <p className='card-text text-muted'>{food.item_description?.slice(0,40)} {food.item_description?.length>40 && '...'}</p>
                                 {ratings[food.id] && (
-                                  <div class="mb-2"
+                                  <div class="mb-2 rating-summary-wrapper position-relative"
                                     onMouseEnter={()=>setHovered(food.id)}
                                     onMouseLeave={()=>setHovered(null)}
                                     >
@@ -148,8 +148,22 @@ function Home() {
                                       </small>
                                     </div>
                                     {hovered === food.id && ratings[food.id].breakdown && (
-                                      <div class="hover-popup">
-                                        
+                                      <div className="hover-popup p-3 border rounded shadow position-absolute bg-white" style={{bottom:"100%", width:"100%", marginBottom:"10px", zIndex:"100"}}>
+                                        {[5,4,3,2,1].map((star)=>{
+                                          const count = ratings[food.id].breakdown[star] || 0
+                                          const percentage = ratings[food.id].total_reviews ? (count/ratings[food.id].total_reviews)*100 : 0 ;
+                                          
+                                          return(
+                                            <div key={star} class="d-flex align-items-center mb-1">
+                                              <small className='me-2' style={{width:50}}>{star} star</small>
+                                              <div className="progress flex-grow-1">
+                                                <div className="progress-bar bg-warning" style={{width:`${percentage}%`}}></div>
+                                                
+                                              </div>
+                                              <small className="ms-2">{count}</small>
+                                            </div>
+                                          )
+                                        })}
                                       </div>
                                     )}
                                   </div>
@@ -159,7 +173,7 @@ function Home() {
                                     {food.is_available ? (
                                         <Link to={`/food/${food.id}`} className='btn btn-outline-primary btn-sm'><i className='fas fa-shopping-basket me-1'></i> Order Now</Link>
                                     ) : (
-                                        <div title='This food item is not availabl right now. Please try again later.'><button className='btn btn-outline-secondary btn-sm'><i className='fas fa-times-circle me-1'></i>Currently Unavailable</button></div>
+                                        <div title='This food item is not available right now. Please try again later.'><button className='btn btn-outline-secondary btn-sm'><i className='fas fa-times-circle me-1'></i>Currently Unavailable</button></div>
                                     ) }
                                 </div>
                             </div>
