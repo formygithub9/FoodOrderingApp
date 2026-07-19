@@ -636,4 +636,18 @@ def food_rating_summary(request,food_id):
         'breakdown' : {entry['rating']: entry['count'] for entry in rating_summary}
     }
     )
-    
+
+@api_view(['GET'])
+def all_reviews(request):
+    reviews = Review.objects.select_related('user','food').order_by('-created_at')
+    serializer = ReviewSerializer(reviews, many=True)
+    return Response(serializer.data)
+
+@api_view(['DELETE'])
+def delete_review(request,id):
+    try:
+        review = Review.objects.get(id=id)
+        review.delete()
+        return Response({"message":"Review deleted successfully."}, status=200)
+    except Review.DoesNotExist:
+        return Response({"message":"Review not found."}, status=404)

@@ -8,7 +8,10 @@ import 'react-toastify/dist/ReactToastify.css'
 const ManageCategory = () => {
   const [categories,setCategories] = useState([])
   const [allcategories,setAllCategories] = useState([])
-  
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const categoriesPerPage = 5;
+
   useEffect(()=>{
     fetch('http://127.0.0.1:8000/api/categories')
     .then(res=>res.json())
@@ -44,6 +47,15 @@ const ManageCategory = () => {
     }
       
   }
+
+  //Pagination Logic
+  const indexOfLastCategory = currentPage * categoriesPerPage;
+  const indexOfFirstCategory = (currentPage - 1) * categoriesPerPage;
+  const currentCategories = categories.slice(indexOfFirstCategory,indexOfLastCategory);
+  const totalPages = Math.ceil(categories.length / categoriesPerPage);
+  
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <AdminLayout>
         <ToastContainer position="top-right" autoClose={2000} />
@@ -74,9 +86,9 @@ const ManageCategory = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {categories.map((cat,index)=>(
+                    {currentCategories.map((cat,index)=>(
                         <tr key={cat.id}>
-                        <td>{index+1}</td>
+                        <td>{indexOfFirstCategory+index+1}</td>
                         <td>{cat.category_name}</td>
                         <td>{new Date(cat.creation_date).toLocaleString()}</td>
                         <td>
@@ -91,6 +103,15 @@ const ManageCategory = () => {
                     
                 </tbody>
             </table>
+            <div class="mt-3 d-flex justify-content-center">
+                <nav>
+                    <ul className='pagination'>
+                        {Array.from({length:totalPages},(_,i)=>i+1).map((page)=>(
+                            <li key={page} className={`page-item ${page === currentPage ? 'active' : ''} `}><button onClick={()=>paginate(page)} className='page-link'>{page}</button></li>
+                        ))}
+                    </ul>
+                </nav>
+            </div>
         </div>
     </AdminLayout>
   );
